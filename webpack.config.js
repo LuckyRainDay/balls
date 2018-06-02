@@ -2,15 +2,15 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-var project_dir = path.resolve(__dirname, './build/');
+var project_dir = path.resolve(__dirname, './dist/');
 
 balls = {
     // devtool: 'source-map',
-    entry: './src/js/baseballs/static_ball.js',
+    entry: './src/js/baseballs/main.js',
     output: {
-        path: path.resolve(project_dir, './js/'),
-        filename: '[name].js',
-        publicPath: '/build/js/'
+        path: project_dir,
+        filename: '[name]-[hash].js',
+        publicPath: '/dist/'
     },
     module: {
         rules: [
@@ -40,13 +40,16 @@ balls = {
     },
     plugins: [
         new webpack.BannerPlugin('I wanna play balls.'),
-        // new HtmlWebpackPlugin({
-        //     template: __dirname + "/html/index.html"
-        // }),
-        // new webpack.optimize.OccurrenceOrderPlugin(),
-        // new webpack.optimize.UglifyJsPlugin(),
-        // new ExtractTextPlugin("style.css")
-    ]
+        new HtmlWebpackPlugin({
+            template: __dirname + "/public/index.html"
+        }),
+        new webpack.HotModuleReplacementPlugin()
+    ],
+    devServer: {
+        contentBase: "./dist/",//对外提供的访问内容的路径
+        historyApiFallback: true,//不跳转
+        inline: true //实时刷新
+    }
 }
 
 module.exports = balls;
