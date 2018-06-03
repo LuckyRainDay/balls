@@ -12,12 +12,26 @@ balls = {
         filename: '[name]-[hash].js',
         publicPath: '/dist/'
     },
+    resolve: {
+        alias: {
+            'css': path.resolve(__dirname, './src/css'),
+            'js': path.resolve(__dirname, './src/js')
+        }
+    },
     module: {
         rules: [
             {
                 test: /\.(js)$/,
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
+                query: {
+                    cacheDirectory: true,
+                    plugins: [
+                        'transform-runtime',
+                        'transform-decorators'
+                    ],
+                    presets: ['es2015', 'react', 'stage-0']
+                }
             },
             {
                 test: /\.(css)$/,

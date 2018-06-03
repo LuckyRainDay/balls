@@ -1,6 +1,5 @@
 const express = require('express');
 const webpack = require('webpack');
-// const WebpackDevServer = require('webpack-dev-server');
 const webpackConfig = require('./webpack.config');
 const path = require('path');
 
