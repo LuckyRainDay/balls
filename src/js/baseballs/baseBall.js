@@ -1,26 +1,32 @@
 import React, {Component} from 'react';
 import styles from 'css/baseballs/main.css';
-import {dropBall} from './utils'
 import {Ball} from './ball'
 
 class BaseBall extends Component {
+    state = {
+        widthCanvas: 900,
+        heightCanvas: 900,
+        scaleCanvas: 0.5
+    }
     initBaseBallCancas() {
-        const width = 900;
-        const height = 900;
-        const scale = 0.5;
-
         var canvas = document.getElementById('main-canvas');
-        canvas.width = width;
-        canvas.height= height;
+        canvas.width = this.state.widthCanvas;
+        canvas.height= this.state.heightCanvas;
         var context = canvas.getContext('2d');
-        context.scale(scale, scale);
-        // dropBall(context, 10, 10, 10);
-        var ball = new Ball(context, 100, 10, 10);
+        context.scale(this.state.scaleCanvas, this.state.scaleCanvas);
+
+        this.dropBall(context, 100, 10, 10);
+    }
+    dropBall(context, x, y, radius) {
+        const width = this.state.widthCanvas / this.state.scaleCanvas;
+        const height = this.state.heightCanvas / this.state.scaleCanvas;
+
+        var ball = new Ball(context, x, y, radius);
         ball.setGravity(true);
         ball.setAnimationBefore(function(){
-            context.clearRect(50, 0, 150, 1800);
+            context.clearRect(0, 0, width, height);
         });
-        this.setStepCallback(ball, width/scale, height/scale);
+        this.setStepCallback(ball, width, height);
         ball.start();
     }
     setStepCallback(ball, width, height) {
@@ -39,7 +45,9 @@ class BaseBall extends Component {
     }
 
     render() {
-        return <canvas id="main-canvas" class={styles["main-canvas"]}></canvas>;
+        return <div>
+            <canvas id="main-canvas" class={styles["main-canvas"]}></canvas>
+        </div>;
     }
 }
 export default BaseBall

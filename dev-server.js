@@ -19,8 +19,7 @@ var devMiddleware = require('webpack-dev-middleware')(compiler, {
         colors: true,
         chunks: false,
         chunkModules: false
-    },
-    hot: true
+    }
 });
 
 app.use(devMiddleware)
@@ -30,10 +29,16 @@ config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
 // 路由
 app.get('/:viewname?', function(req, res, next) {
+    var filename = req.params.viewname || '';
+    // 如果存在viewname，且viewname没有文件后缀，则添加'.html'的文件后缀
+    filename = (filename && filename.indexOf('.') === -1) ? (filename+'.html') : filename;
 
-    var viewname = req.params.viewname 
-        ? req.params.viewname + '.html' 
-        : 'index.html';
+    // 如果不是以html结尾，则不走下面的步骤
+    if(filename.endsWith('.html') === -1) {
+        return ;
+    }
+
+    var viewname = req.params.viewname ? filename : 'index.html';
 
     var filepath = path.join(compiler.outputPath, viewname);
     console.log('filepath = '+filepath)

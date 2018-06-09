@@ -7,6 +7,7 @@ var project_dir = path.resolve(__dirname, './dist/');
 balls = {
     // devtool: 'source-map',
     entry: './src/js/baseballs/main.js',
+    // entry: './src/js/threejsballs/main.js',
     output: {
         path: project_dir,
         filename: '[name]-[hash].js',
@@ -15,7 +16,8 @@ balls = {
     resolve: {
         alias: {
             'css': path.resolve(__dirname, './src/css'),
-            'js': path.resolve(__dirname, './src/js')
+            'js': path.resolve(__dirname, './src/js'),
+            'assets': path.resolve(__dirname, '../assets/')
         }
     },
     module: {
@@ -49,6 +51,10 @@ balls = {
                         loader: "postcss-loader"
                     }
                 ]
+            },
+            {
+                test: /\.jpe?g$|\.ico$|\.gif$|\.png$|\.svg$|\.woff$|\.ttf$|\.wav$|\.mp3$/,
+                loader: 'file-loader?name=[name].[ext]'  // <-- retain original file name
             }
         ]
     },
@@ -56,7 +62,8 @@ balls = {
         new webpack.BannerPlugin('I wanna play balls.'),
         new HtmlWebpackPlugin({
             template: __dirname + "/public/index.html",
-            minify: false
+            minify: false,
+            favicon: 'assets/img/favicon.ico'
         }),
         new webpack.HotModuleReplacementPlugin()
     ],
