@@ -2,6 +2,9 @@ const express = require('express');
 const webpack = require('webpack');
 const webpackConfig = require('./webpack.config');
 const path = require('path');
+var WebpackDevMiddleware = require('webpack-dev-middleware');
+var WebpackHotMiddleware = require('webpack-hot-middleware');
+var config = require('./webpack.config');
 
 var app = express();
 // webpack编译器
@@ -14,11 +17,16 @@ var devMiddleware = require('webpack-dev-middleware')(compiler, {
     publicPath: webpackConfig.output.publicPath,
     stats: {
         colors: true,
-        chunks: false
-    }
+        chunks: false,
+        chunkModules: false
+    },
+    hot: true
 });
 
 app.use(devMiddleware)
+app.use(WebpackHotMiddleware(compiler))
+
+config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
 // 路由
 app.get('/:viewname?', function(req, res, next) {

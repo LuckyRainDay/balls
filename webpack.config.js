@@ -21,7 +21,7 @@ balls = {
     module: {
         rules: [
             {
-                test: /\.(js)$/,
+                test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 loader: 'babel-loader',
                 query: {
@@ -55,7 +55,8 @@ balls = {
     plugins: [
         new webpack.BannerPlugin('I wanna play balls.'),
         new HtmlWebpackPlugin({
-            template: __dirname + "/public/index.html"
+            template: __dirname + "/public/index.html",
+            minify: false
         }),
         new webpack.HotModuleReplacementPlugin()
     ],

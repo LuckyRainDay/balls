@@ -1,4 +1,4 @@
-const GRAVITY = 98;
+const GRAVITY = 500;
 const GRAVITY_ANIMATION = 'gravity_animation';
 
 export class Ball {
@@ -16,8 +16,16 @@ export class Ball {
         this.y = typeof y === 'number' ? y : radius;
         this.animate = {};
         this.velocity = {x:0, y:0, z:0};
+        this.cacheCanvas = document.createElement("canvas");
+        this.cacheCtx = this.cacheCanvas.getContext("2d");
         if(!isHidden) {
             this.show();
+        }
+    }
+
+    setStepCallback(callback) {
+        if(typeof callback === 'function') {
+            this.stepCallback = callback;
         }
     }
 
@@ -38,10 +46,15 @@ export class Ball {
         }
     }
 
-    setGravity(isGravity) {
+    setGravity(isGravity, animateGravity) {
         this.isGravity = isGravity;
         if(isGravity) {
-            this.animate[GRAVITY_ANIMATION] = this.animateGravity;
+            if(typeof animateGravity === 'function') {
+                this.animate[GRAVITY_ANIMATION] = animateGravity;
+            }else {
+                this.animate[GRAVITY_ANIMATION] = this.animateGravity;
+            }
+            
         }else {
             this.animate[GRAVITY_ANIMATION] = void 0;
         }
@@ -52,13 +65,13 @@ export class Ball {
         const velocityInc = gap * GRAVITY;
         this.y += (this.velocity.y + velocityInc/2) * gap;
         this.velocity.y += velocityInc;
-        console.log(this.y);
+        console.log('y = '+this.y+'; velocity.y = '+this.velocity.y+'; velocityInc = '+velocityInc);
     }
 
     start() {
         const _this = this;
         this.raf = window.requestAnimationFrame(function(timestamp) {
-            _this.step.call(_this, timestamp);
+            _this.step.call(_this, timestamp, _this.stepCallback);
             _this.show();
         });
     }
@@ -67,7 +80,7 @@ export class Ball {
         window.cancelAnimationFrame(this.raf);
     }
 
-    step(currentTimestamp) {
+    step(currentTimestamp, stepCallback) {
         // 记录当前时间
         const lastTimestamp = this.lastTimestamp;
         this.lastTimestamp = currentTimestamp;
@@ -90,6 +103,9 @@ export class Ball {
             if(typeof animate === 'function') {
                 animate.call(_this, lastTimestamp, currentTimestamp);
             }
+        }
+        if(typeof stepCallback === 'function') {
+            stepCallback.call(this, currentTimestamp);
         }
     }
 
