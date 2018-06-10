@@ -8,6 +8,7 @@ class BaseBall extends Component {
         heightCanvas: 900,
         scaleCanvas: 0.5
     }
+    
     initBaseBallCancas() {
         var canvas = document.getElementById('main-canvas');
         canvas.width = this.state.widthCanvas;
@@ -17,6 +18,7 @@ class BaseBall extends Component {
 
         this.dropBall(context, 100, 10, 10);
     }
+
     dropBall(context, x, y, radius) {
         const width = this.state.widthCanvas / this.state.scaleCanvas;
         const height = this.state.heightCanvas / this.state.scaleCanvas;
@@ -29,6 +31,7 @@ class BaseBall extends Component {
         this.setStepCallback(ball, width, height);
         ball.start();
     }
+
     setStepCallback(ball, width, height) {
         ball.setStepCallback(function(currentTimestamp) {
             // 这里的this为ball
@@ -40,13 +43,14 @@ class BaseBall extends Component {
             }
         });
     }
+
     componentDidMount() {
         this.initBaseBallCancas();
     }
 
     render() {
         return <div>
-            <canvas id="main-canvas" class={styles["main-canvas"]}></canvas>
+            <canvas id="main-canvas" className={styles["main-canvas"]}></canvas>
         </div>;
     }
 }

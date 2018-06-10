@@ -6,8 +6,9 @@ var project_dir = path.resolve(__dirname, './dist/');
 
 balls = {
     // devtool: 'source-map',
-    entry: './src/js/baseballs/main.js',
-    // entry: './src/js/threejsballs/main.js',
+    entry: {},
+    mode: 'development',
+    // mode: 'production'
     output: {
         path: project_dir,
         filename: '[name]-[hash].js',
@@ -61,9 +62,11 @@ balls = {
     plugins: [
         new webpack.BannerPlugin('I wanna play balls.'),
         new HtmlWebpackPlugin({
-            template: __dirname + "/public/index.html",
+            filename: 'index.html',
+            template: __dirname + "/public/baseballs/index.html",
+            chunks: ['baseballs'],
             minify: false,
-            favicon: 'assets/img/favicon.ico'
+            favicon: 'assets/img/favicon.ico' // 添加favicon.ico
         }),
         new webpack.HotModuleReplacementPlugin()
     ],
@@ -71,7 +74,48 @@ balls = {
         contentBase: "./dist/",//对外提供的访问内容的路径
         historyApiFallback: true,//不跳转
         inline: true //实时刷新
-    }
+    },
+
 }
+
+/* 目前添加一个组件默认的目录结构为
+ * 
+ * html: /public/component_name/index.html
+ * 入口JS: /src/js/component_name/main.js
+ * CSS: /src/css/component_name/main.css
+ * 
+*/
+
+// 组件名称
+const entries = [
+    'baseballs',
+    'threejsballs'
+];
+
+
+// 初始化entry
+(function setEntries() {
+    entries.forEach((item) => {
+        balls.entry[item] = [
+            'babel-polyfill', //为全局对象添加ES6方法
+            './src/js/'+item+'/main.js'
+        ]
+    });
+})();
+
+// 初始化HtmlWebpackPlugin设置
+(function setHtmlWebpackPlygins() {
+    entries.forEach((item) => {
+        balls.plugins.push(
+            new HtmlWebpackPlugin({
+                filename: item + '/index.html',
+                template: path.join(__dirname, 'public', item, '/index.html'),
+                chunks: [item],
+                minify: false,
+                favicon: 'assets/img/favicon.ico' // 添加favicon.ico
+            })
+        );
+    });
+})();
 
 module.exports = balls;
