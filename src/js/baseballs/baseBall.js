@@ -4,8 +4,8 @@ import {Ball} from './ball'
 
 class BaseBall extends Component {
     state = {
-        widthCanvas: 900,
-        heightCanvas: 900,
+        widthCanvas: window.innerWidth - 50,
+        heightCanvas: window.innerHeight - 50,
         scaleCanvas: 0.5
     }
     
@@ -13,6 +13,8 @@ class BaseBall extends Component {
         var canvas = document.getElementById('main-canvas');
         canvas.width = this.state.widthCanvas;
         canvas.height= this.state.heightCanvas;
+        canvas.style.width = this.state.widthCanvas + 'px';
+        canvas.style.height = this.state.heightCanvas + 'px';
         var context = canvas.getContext('2d');
         context.scale(this.state.scaleCanvas, this.state.scaleCanvas);
 
@@ -38,6 +40,7 @@ class BaseBall extends Component {
             if(this.y+this.radius >= height) {
                 this.velocity.y = -0.9 * Math.abs(this.velocity.y);
                 if(Math.abs(this.velocity.y) < 5) {
+                    console.log(this);
                     this.stop();
                 }
             }

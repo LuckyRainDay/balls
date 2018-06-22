@@ -61,15 +61,29 @@ export class Ball {
     }
 
     animateGravity(lastTimestamp, currentTimestamp) {
+        // 如果两次调用时间间隔大于50ms，则不做处理，维持原状态
+        if(currentTimestamp - lastTimestamp > 50) {
+            // 防止窗口长时间失焦时，小球运动不受控制。
+            return ;
+        }
         var gap = (currentTimestamp - lastTimestamp) / 1000;
         const velocityInc = gap * GRAVITY;
         this.y += (this.velocity.y + velocityInc/2) * gap;
         this.velocity.y += velocityInc;
-        console.log('y = '+this.y+'; velocity.y = '+this.velocity.y+'; velocityInc = '+velocityInc);
+        console.log('y = '+this.y + 
+            '; velocity.y = '+this.velocity.y + 
+            '; velocityInc = '+velocityInc + 
+            '; lastTimestamp = '+lastTimestamp + 
+            '; currentTimestamp = '+currentTimestamp);
     }
 
     start() {
         const _this = this;
+        /*
+         * requestAnimationFrame在MacOS的Safari中，window失去焦点时（比如：切换tab、切换到其他分屏），
+         * requestAnimationFrame的回调函数不会按照显示屏的刷新帧率调用，而是停止调用，知道再次聚焦时，
+         * 才会恢复正常的回调。
+         */
         this.raf = window.requestAnimationFrame(function(timestamp) {
             _this.step.call(_this, timestamp, _this.stepCallback);
             _this.show();
