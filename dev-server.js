@@ -27,13 +27,13 @@ app.use(WebpackHotMiddleware(compiler))
 
 config.plugins.push(new webpack.HotModuleReplacementPlugin());
 
-// 首页路由
+// 首页/默认页面 路由
 app.get('/', function(req, res, next) {
     var filepath = path.join(compiler.outputPath, 'index.html');
     sendHTML(filepath, res, next);
 })
 
-// 页面路由逻辑
+// 页面/子路径 路由逻辑
 app.get('/:viewname?', function(req, res, next) {
     var filename = req.params.viewname || '';
     // 如果存在viewname，且viewname没有文件后缀，则添加'.html'的文件后缀
@@ -51,6 +51,11 @@ app.get('/:viewname?', function(req, res, next) {
     console.log('filepath = '+filepath)
 
     sendHTML(filepath, res, next);
+});
+
+
+app.get('/:model/:viewname?', function(req, res, next) {
+    console.log('req.params = '+req.params);
 });
 
 
