@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 
-var project_dir = path.resolve(__dirname, './dist/');
+var project_dir = path.resolve(__dirname, './dist/'); // 打包后文件的存储目录
 
 balls = {
     // devtool: 'source-map',
@@ -108,9 +108,9 @@ const entries = [
     entries.forEach((item) => {
         balls.plugins.push(
             new HtmlWebpackPlugin({
-                filename: item + '/index.html',
-                template: path.join(__dirname, 'public', item, '/index.html'),
-                chunks: [item],
+                filename: item + '/index.html', // html文件的存储路径
+                template: path.join(__dirname, 'public', item, '/index.html'), // 读取的模板html的路径
+                chunks: [item], // 加载的JS、CSS文件
                 minify: false,
                 favicon: 'assets/img/favicon.ico' // 添加favicon.ico
             })
