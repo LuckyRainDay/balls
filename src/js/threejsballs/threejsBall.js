@@ -15,11 +15,13 @@ class ThreejsBall extends Component {
     componentDidMount() {
 
         // this.initBaseThreejsBall();
-        this.initStructuredThreejsBall();
+        this.initStructuredThreejsLine();
     }
 
-    // 渲染结构化的threejs构造的球
-    initStructuredThreejsBall() {
+    
+
+    // Lesson 2 . 渲染结构化的threejs的线
+    initStructuredThreejsLine() {
         let renderer = this.initRenderer();
         let camera = this.initCamera(this.state.width, this.state.height);
         let scene = this.initScene();
@@ -97,7 +99,7 @@ class ThreejsBall extends Component {
 
         // 线的材质可以由两点的颜色决定
         let p1 = new THREE.Vector3( -100, 0, 100),
-        p2 = new THREE.Vector3( 100, 0, -100);
+        p2 = new THREE.Vector3( 100, 10, -100);
         geometry.vertices.push(p1);
         geometry.vertices.push(p2);
         geometry.colors.push(color1, color2);
@@ -128,7 +130,8 @@ class ThreejsBall extends Component {
         }
     }
 
-    // 渲染简单的threejs构造的球
+
+    // Lesson 1 . 渲染简单的threejs构造的球
     initBaseThreejsBall() {
         // 创建场景
         var scene = new THREE.Scene();
