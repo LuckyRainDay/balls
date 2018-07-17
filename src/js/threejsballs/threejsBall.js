@@ -14,20 +14,54 @@ class ThreejsBall extends Component {
     }
     componentDidMount() {
 
+        // Lesson 1 . 渲染简单的threejs构造的球
         // this.initBaseThreejsBall();
+        
+        // Lesson 2 . 渲染结构化的threejs的线
         this.initStructuredThreejsLine();
+        
+        // Lesson 3 . 渲染双子星结构
+
     }
 
-    
+    // Lesson 3 . 渲染双子星结构
+    initBinaryStars() {
+        this.initBasicEnviroment(this.initBinaryStarsObject);
+    }
+
+    initBinaryStarsObject(scene) {
+        
+    }
+
+    getLight(x, y, z, color) {
+        /* 
+         * THREE.PointLight(color, intensity, distance, decay, positin, visible)
+         * color: 光照颜色
+         * instensity: 光照强度。默认值为1
+         * distance: 光照距离。默认值为0，表示光照强度不会随距离增加而减少
+         * decay: 衰减度。光源的照射随距离的增加而衰减的程度。默认值为1
+         * positon: 光源所在的位置
+         * visible: 光源是否打开
+         */
+        let light = new THREE.PointLight(color, 1, 100);
+        light.position.set(x, y, z);
+        light.add(this.getLightSphere(color));
+        return light;
+    }
 
     // Lesson 2 . 渲染结构化的threejs的线
     initStructuredThreejsLine() {
+        this.initBasicEnviroment(this.initLineObject, {light: false});
+    }
+
+    initBasicEnviroment(initObject, options) {
+        options = options || {};
         let renderer = this.initRenderer();
-        let camera = this.initCamera(this.state.width, this.state.height);
-        let scene = this.initScene();
-        let light = this.initLight(scene);
-        this.initLineObject(scene);
-        this.initCoordinateSystem(scene);
+        let camera = this.initCamera(this.state.width, this.state.height, options.camera);
+        let scene = this.initScene(options.scene);
+        // let light = this.initLight(scene, options.light);
+        typeof initObject === 'function' && initObject(scene);
+        this.initCoordinateSystem(scene, options.coordinateSystem);
         renderer.clear();
         renderer.render(scene, camera);
     }
@@ -50,30 +84,37 @@ class ThreejsBall extends Component {
     }
 
     // 初始化摄像机
-    initCamera(width, height) {
-        let camera = new THREE.PerspectiveCamera(75, width/height, 1, 1000);
-        camera.position.x = 100;
-        camera.position.y = 100;
-        camera.position.z = 100;
-        camera.up.x = 0;
-        camera.up.y = 0;
-        camera.up.z = 1;
-        camera.lookAt(new THREE.Vector3(0,0,0))
+    initCamera(width, height, camera) {
+        if(!camera) {
+            camera = new THREE.PerspectiveCamera(75, width/height, 1, 1000);
+            camera.position.x = 100;
+            camera.position.y = 100;
+            camera.position.z = 100;
+            camera.up.x = 0;
+            camera.up.y = 0;
+            camera.up.z = 1;
+            camera.lookAt(new THREE.Vector3(0,0,0))
+        }
         this.state.camera = camera;
         return camera;
     }
 
     // 初始化场景
-    initScene() {
-        let scene = new THREE.Scene();
+    initScene(scene) {
+        scene = scene || new THREE.Scene();
         this.state.scene = scene;
         return scene;
     }
 
     // 初始化灯光
-    initLight(scene) {
-        let light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
-        light.position.set(100, 100, 100);
+    initLight(scene, light) {
+        if(light === false) {
+            return ;
+        }
+        if(!light) {
+            light = new THREE.DirectionalLight(0xFF0000, 1.0, 0);
+            light.position.set(100, 100, 100);
+        }
         scene.add(light);
         this.state.light = light;
         return light;
@@ -108,7 +149,10 @@ class ThreejsBall extends Component {
         scene.add(line);
     }
 
-    initCoordinateSystem(scene) {
+    initCoordinateSystem(scene, coordinateSystem) {
+        if(coordinateSystem === false) {
+            return ;
+        }
         let material = new THREE.LineBasicMaterial({
             vertexColors: THREE.VertexColors
         });
